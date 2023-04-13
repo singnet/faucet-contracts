@@ -1,6 +1,6 @@
 # SingularityNET token faucet contracts
 
-Smart contracts for [Faucet by SingularityNET](faucet.singularitynet.io/)
+Smart contracts for [Faucet by SingularityNET](https://faucet.singularitynet.io/)
 
 ## Functional requirements
 The possibility for users to receive text tokens
