@@ -11,29 +11,28 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
   *
   */
 contract FaucetV1 is Ownable {
-    address payable contractOwner;
-    IERC20 public agixToken;
+    address payable public contractOwner;
+    IERC20 public fetToken;
     IERC20 public rejuveToken;
 
-    uint256 public agixWithdrawalAmount = 50 * (10**8);
+    uint256 public fetWithdrawalAmount = 50 * (10**18);
     uint256 public rejuveWithdrawalAmount = 50 * (10**6);
     uint256 public lockTime = 1 hours;
 
     event Distribution(address indexed to, uint256 indexed amount);
     event Withdrawal(address indexed to, uint256 indexed amount);
 
-    mapping(address => uint256) nextAccessTime;
+    mapping(address => uint256) public nextAccessTime;
 
-    constructor(address _agixTokenAddress, address _rejuveTokenAddress) payable {
-        agixToken = IERC20(_agixTokenAddress);
+    constructor(address _fetTokenAddress, address _rejuveTokenAddress) {
+        fetToken = IERC20(_fetTokenAddress);
         rejuveToken = IERC20(_rejuveTokenAddress);
-        contractOwner = payable(msg.sender);
     }
 
     /**
      * @dev `tokenId` for identify token for send.
      *
-     * `0` - SingularityNet Token
+     * `0` - FetchAI Token
      * `1` - Rejuve Token
      * 
      */
@@ -47,7 +46,7 @@ contract FaucetV1 is Ownable {
             "Request must not originate from a zero account"
         );
         require(
-            agixToken.balanceOf(address(this)) >= agixWithdrawalAmount ||
+            fetToken.balanceOf(address(this)) >= fetWithdrawalAmount ||
             rejuveToken.balanceOf(address(this)) >= rejuveWithdrawalAmount,
             "Insufficient balance in faucet for withdrawal request"
         );
@@ -59,8 +58,8 @@ contract FaucetV1 is Ownable {
         nextAccessTime[msg.sender] = block.timestamp + lockTime;
 
         if (_tokenId == 0) {
-            agixToken.transfer(msg.sender, agixWithdrawalAmount);
-            emit Distribution(msg.sender, agixWithdrawalAmount);
+            fetToken.transfer(msg.sender, fetWithdrawalAmount);
+            emit Distribution(msg.sender, fetWithdrawalAmount);
         } else {
             rejuveToken.transfer(msg.sender, rejuveWithdrawalAmount);
             emit Distribution(msg.sender, rejuveWithdrawalAmount);
@@ -74,7 +73,7 @@ contract FaucetV1 is Ownable {
      * 
      */
     function setWithdrawalAmount(uint256 amount) public onlyOwner {
-        agixWithdrawalAmount = amount * (10**8);
+        fetWithdrawalAmount = amount * (10**18);
         rejuveWithdrawalAmount = amount * (10**6);
     }
 
@@ -91,10 +90,10 @@ contract FaucetV1 is Ownable {
      * 
      */
     function withdraw() external onlyOwner {
-        agixToken.transfer(msg.sender, agixToken.balanceOf(address(this)));
+        fetToken.transfer(msg.sender, fetToken.balanceOf(address(this)));
         rejuveToken.transfer(msg.sender,  rejuveToken.balanceOf(address(this)));
 
-        emit Withdrawal(msg.sender, agixToken.balanceOf(address(this)));
+        emit Withdrawal(msg.sender, fetToken.balanceOf(address(this)));
         emit Withdrawal(msg.sender, rejuveToken.balanceOf(address(this)));
     }
 
@@ -103,10 +102,10 @@ contract FaucetV1 is Ownable {
      * @dev Get the remaining balance of tokens.
      * 
      */
-    function getBalance() external view returns (uint256 agixBalance, uint256 rejuveBalance) {
-        uint256 _agixBalance = agixToken.balanceOf(address(this));
+    function getBalance() external view returns (uint256 fetBalance, uint256 rejuveBalance) {
+        uint256 _fetBalance = fetToken.balanceOf(address(this));
         uint256 _rejuveBalance = rejuveToken.balanceOf(address(this));
 
-        return (_agixBalance, _rejuveBalance);
+        return (_fetBalance, _rejuveBalance);
     }
 }

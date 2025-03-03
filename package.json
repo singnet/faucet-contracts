@@ -1,17 +1,25 @@
 {
-  "name": "truffle",
+  "name": "faucet",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "SingularityNET",
+  "description": "Faucet Contracts",
   "license": "MIT",
+  "author": "SingularityNET Foundation",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "5.0.0",
+    "@nomicfoundation/hardhat-verify": "2.0.12",
+    "@nomiclabs/hardhat-solhint": "4.0.1",
+    "@openzeppelin/contracts": "4.9.6",
+    "hardhat": "2.22.19",
+    "hardhat-contract-sizer": "2.10.0"
+  },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.8.2",
-    "@truffle/hdwallet-provider": "^2.1.8",
-    "dotenv": "^16.0.3",
-    "truffle-plugin-verify": "^0.6.2"
+    "dotenv": "16.4.7",
+    "web3": "4.16.0"
+  },
+  "scripts": {
+    "c": "npx hardhat compile --show-stack-traces",
+    "t": "npx hardhat test",
+    "cov": "npx hardhat coverage",
+    "l": "solhint --max-warnings 0 \"contracts/**/*.sol\""
   }
 }
